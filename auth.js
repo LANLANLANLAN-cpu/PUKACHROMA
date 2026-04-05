@@ -5,6 +5,7 @@ export async function signUpWithEmail({ email, password, displayName }) {
     email,
     password,
     options: {
+      emailRedirectTo: 'https://lanlanlanlan-cpu.github.io/PUKACHROMA/auth-confirm.html',
       data: {
         display_name: displayName || ''
       }
@@ -12,7 +13,6 @@ export async function signUpWithEmail({ email, password, displayName }) {
   })
 
   if (error) throw error
-
   return data
 }
 
@@ -70,7 +70,6 @@ export async function ensureProfile(user, displayName = '') {
     .maybeSingle()
 
   if (existingError) throw existingError
-
   if (existing) return existing
 
   const { error } = await supabase
@@ -96,11 +95,34 @@ export async function getMyProfile() {
   return data
 }
 
-export async function requireAuth(redirectTo = 'login.html') {
-  const user = await getCurrentUser()
-  if (!user) {
-    window.location.href = redirectTo
-    return null
+export async function resendSignupEmail(email) {
+  const { data, error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: 'https://lanlanlanlan-cpu.github.io/PUKACHROMA/auth-confirm.html'
+    }
+  })
+
+  if (error) throw error
+  return data
+}
+
+export async function verifyEmailToken(tokenHash) {
+  const { data, error } = await supabase.auth.verifyOtp({
+    token_hash: tokenHash,
+    type: 'email'
+  })
+
+  if (error) throw error
+
+  if (data.user) {
+    const fallbackName =
+      data.user.user_metadata?.display_name ||
+      data.user.email?.split('@')[0] ||
+      ''
+    await ensureProfile(data.user, fallbackName)
   }
-  return user
+
+  return data
 }
