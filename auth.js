@@ -13,10 +13,6 @@ export async function signUpWithEmail({ email, password, displayName }) {
 
   if (error) throw error
 
-  if (data.user) {
-    await ensureProfile(data.user, displayName || '')
-  }
-
   return data
 }
 
@@ -33,6 +29,7 @@ export async function signInWithEmail({ email, password }) {
       data.user.user_metadata?.display_name ||
       data.user.email?.split('@')[0] ||
       ''
+
     await ensureProfile(data.user, fallbackName)
   }
 
@@ -66,9 +63,19 @@ export async function ensureProfile(user, displayName = '') {
     role: 'user'
   }
 
+  const { data: existing, error: existingError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (existingError) throw existingError
+
+  if (existing) return existing
+
   const { error } = await supabase
     .from('profiles')
-    .upsert(payload, { onConflict: 'id' })
+    .insert(payload)
 
   if (error) throw error
 
@@ -83,7 +90,7 @@ export async function getMyProfile() {
     .from('profiles')
     .select('*')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (error) throw error
   return data
