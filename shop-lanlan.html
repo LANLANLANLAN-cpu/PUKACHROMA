@@ -88,24 +88,62 @@
     <span class="breadcrumb">Shop / All / Lanlan</span>
   </h1>
 
-  <div class="product-grid">
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-    <a href="#" class="product-card"></a>
-  </div>
+  <div class="product-grid" id="productGrid"></div>
 
 </section>
 
 </div>
 
 <script src="script.js"></script>
+
+<script type="module">
+  import { supabase } from './supabase.js'
+
+  async function loadLanlanProducts() {
+    const productGrid = document.getElementById('productGrid')
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('status', 'active')
+      .ilike('category', '%lanlan%')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Load Lanlan products error:', error)
+      productGrid.innerHTML = '<p>Failed to load products.</p>'
+      return
+    }
+
+    if (!data || data.length === 0) {
+      productGrid.innerHTML = '<p>No Lanlan products yet.</p>'
+      return
+    }
+
+    productGrid.innerHTML = ''
+
+    data.forEach(product => {
+      const card = document.createElement('a')
+      card.className = 'product-card product-real-card'
+      card.href = `product.html?id=${product.id}`
+
+      const imageUrl = product.cover_image || 'https://via.placeholder.com/600x600'
+      const priceText = product.price != null ? `$${product.price}` : ''
+
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${product.name || ''}" class="product-thumb">
+        <div class="product-info">
+          <h3>${product.name || ''}</h3>
+          <p>${priceText}</p>
+        </div>
+      `
+
+      productGrid.appendChild(card)
+    })
+  }
+
+  loadLanlanProducts()
+</script>
+
 </body>
 </html>
