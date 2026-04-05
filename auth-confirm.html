@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Confirmation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="page">
+
+  <header class="navbar">
+    <div class="nav-side nav-left">
+      <nav class="nav-links">
+        <a href="about.html">About Us</a>
+        <a href="schedule.html">Schedule</a>
+      </nav>
+    </div>
+
+    <a href="index.html" class="logo">Logo</a>
+
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
+        <a href="shop.html">Shop</a>
+        <a href="login.html">Log In</a>
+        <a href="my-account.html">My Account</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content-page">
+    <div class="content-wrap">
+      <h1>Email Confirmation</h1>
+
+      <div class="card light" id="confirmBox">
+        Verifying your email...
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script type="module">
+  import { verifyEmailToken } from './auth.js'
+
+  const box = document.getElementById('confirmBox')
+
+  async function runVerification() {
+    const params = new URLSearchParams(window.location.search)
+    const tokenHash = params.get('token_hash')
+    const type = params.get('type')
+
+    if (!tokenHash || type !== 'email') {
+      box.innerHTML = `
+        <p>Invalid verification link.</p>
+        <br>
+        <p>Please request a new confirmation email.</p>
+      `
+      return
+    }
+
+    try {
+      await verifyEmailToken(tokenHash)
+      box.innerHTML = `
+        <p>Your email has been verified successfully.</p>
+        <br>
+        <p><a href="login-account.html" style="color:#22398b;">Go to Log In</a></p>
+      `
+    } catch (error) {
+      console.error(error)
+      box.innerHTML = `
+        <p>Verification failed.</p>
+        <br>
+        <p>${error.message || 'Unknown error'}</p>
+      `
+    }
+  }
+
+  runVerification()
+</script>
+
+</body>
+</html>
