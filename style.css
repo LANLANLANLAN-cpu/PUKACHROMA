@@ -603,3 +603,60 @@ button {
     gap: 18px;
   }
 }
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.product-detail-main-image {
+  width: 100%;
+  display: block;
+  background: #d9d9d9;
+}
+
+.product-detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.product-detail-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #d9d9d9;
+}
+
+.product-detail-right h1 {
+  margin-bottom: 16px;
+}
+
+.product-detail-price {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.product-detail-right p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.product-video-wrap {
+  margin-top: 24px;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+.product-video-wrap iframe {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .product-detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
