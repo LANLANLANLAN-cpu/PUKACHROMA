@@ -3,67 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Log In</title>
+  <title>I Have Account</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 <div class="page">
 
-<header class="navbar">
+  <header class="navbar">
+    <div class="nav-side nav-left">
+      <div class="menu-wrapper">
+        <button class="menu-icon" id="menuToggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-  <div class="nav-side nav-left">
-    <div class="menu-wrapper">
-      <button class="menu-icon" id="menuToggle">
-        <span></span><span></span><span></span>
-      </button>
+        <div class="menu-panel" id="menuPanel">
+          <button class="menu-main" type="button" data-target="aboutSubPanel">About Us +</button>
+          <a class="menu-main" href="schedule.html">Schedule</a>
+          <button class="menu-main" type="button" data-target="shopSubPanel">Shop +</button>
+          <button class="menu-main" type="button" data-target="loginSubPanel">Log In +</button>
+          <a class="menu-main" href="my-account.html">My Account</a>
+          <a class="menu-main" href="contact.html">Contact Us</a>
+        </div>
 
-      <div class="menu-panel" id="menuPanel">
+        <div class="menu-subpanel" id="aboutSubPanel">
+          <a href="about-puka-chroma.html">Puka Chroma</a>
+          <a href="about-members.html">Members</a>
+          <a href="about-staffs.html">Staffs</a>
+          <a href="about-past-performance.html">Past Performance</a>
+        </div>
+
+        <div class="menu-subpanel" id="shopSubPanel">
+          <a href="shop-all.html">All</a>
+          <a href="shop-eureka.html">Eureka</a>
+          <a href="shop-kuriru.html">Kuriru</a>
+          <a href="shop-lanlan.html">Lanlan</a>
+          <a href="shop-renie.html">Renie</a>
+          <a href="shop-azure.html">Azure</a>
+          <a href="shop-group.html">Group</a>
+        </div>
+
+        <div class="menu-subpanel" id="loginSubPanel">
+          <a href="login-register.html">Register Now</a>
+          <a href="login-account.html">I Have Account</a>
+        </div>
+      </div>
+
+      <nav class="nav-links">
         <a href="about.html">About Us</a>
         <a href="schedule.html">Schedule</a>
+      </nav>
+    </div>
+
+    <a href="index.html" class="logo">Logo</a>
+
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
         <a href="shop.html">Shop</a>
         <a href="login.html">Log In</a>
         <a href="my-account.html">My Account</a>
         <a href="contact.html">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content-page">
+    <div class="content-wrap">
+      <h1>I Have Account</h1>
+
+      <div class="card dark">
+        <form class="login-form">
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <button type="submit">Log In</button>
+        </form>
       </div>
     </div>
-
-    <nav class="nav-links">
-      <a href="about.html">About Us</a>
-      <a href="schedule.html">Schedule</a>
-    </nav>
-  </div>
-
-  <a href="index.html" class="logo">Logo</a>
-
-  <div class="nav-side nav-right">
-    <nav class="nav-links">
-      <a href="shop.html">Shop</a>
-      <a href="login.html">Log In</a>
-      <a href="my-account.html">My Account</a>
-      <a href="contact.html">Contact Us</a>
-    </nav>
-  </div>
-
-</header>
-
-<section class="content-page">
-  <div class="content-wrap">
-    <h1>I Have Account</h1>
-
-    <div class="card dark">
-      <form class="login-form">
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button type="submit">Log In</button>
-      </form>
-    </div>
-
-  </div>
-</section>
+  </section>
 
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
