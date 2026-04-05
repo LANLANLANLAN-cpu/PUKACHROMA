@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1f1f1f;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #b9e3df;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  position: sticky;
+  top: 0;
+}
+
+.nav-left, .nav-right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.menu-icon {
+  width: 30px;
+  height: 30px;
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px;
+  gap: 4px;
+}
+
+.menu-icon span {
+  height: 2px;
+  background: white;
+}
+
+.logo {
+  background: #22398b;
+  padding: 8px 30px;
+}
+
+/* HERO */
+.hero {
+  background: #1f2395;
+  padding: 30px 0;
+}
+
+.hero-box {
+  width: 80%;
+  height: 400px;
+  margin: auto;
+  background: linear-gradient(rgba(65,132,178,0.7),rgba(65,132,178,0.7)),
+              url("https://images.unsplash.com/photo-1511632765486-a01980e01a18");
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.hero-box p {
+  font-size: 20px;
+}
+
+.hero-box h1 {
+  position: absolute;
+  bottom: 20px;
+}
+
+/* SCROLL */
+.scroll {
+  text-align: center;
+  font-size: 40px;
+  padding: 20px;
+}
+
+/* INFO */
+.info {
+  background: #1f2395;
+  text-align: center;
+  padding: 30px;
+}
+
+.secret {
+  font-size: 24px;
+  border-bottom: 4px solid #5c7dff;
+}
+
+.event {
+  width: 60%;
+  height: 200px;
+  margin: 20px auto;
+  background: linear-gradient(#1d2d9f, #2f8ef5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* SECTIONS */
+section {
+  padding: 60px 0;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.light {
+  background: #b9e3df;
+  color: black;
+}
+
+.dark {
+  background: #22398b;
+}
+
+.mid {
+  background: #4184b2;
+}
+
+/* LOGIN */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background: #b9e3df;
+  color: black;
+  cursor: pointer;
+}
