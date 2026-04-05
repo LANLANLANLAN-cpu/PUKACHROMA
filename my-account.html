@@ -89,7 +89,7 @@
 <script src="script.js"></script>
 
 <script type="module">
-  import { getCurrentUser, getMyProfile, signOutUser } from './auth.js'
+  import { getCurrentUser, getMyProfile, ensureProfile, signOutUser } from './auth.js'
 
   const accountCard = document.getElementById('accountCard')
   const logoutButton = document.getElementById('logoutButton')
@@ -103,7 +103,17 @@
         return
       }
 
-      const profile = await getMyProfile()
+      let profile = await getMyProfile()
+
+      if (!profile) {
+        const fallbackName =
+          user.user_metadata?.display_name ||
+          user.email?.split('@')[0] ||
+          ''
+
+        await ensureProfile(user, fallbackName)
+        profile = await getMyProfile()
+      }
 
       accountCard.innerHTML = `
         <p><strong>Email:</strong> ${profile?.email || user.email || ''}</p>
@@ -114,7 +124,11 @@
       `
     } catch (error) {
       console.error(error)
-      accountCard.innerHTML = 'Failed to load account.'
+      accountCard.innerHTML = `
+        <p>Failed to load account.</p>
+        <br>
+        <p>${error.message || 'Unknown error'}</p>
+      `
     }
   }
 
