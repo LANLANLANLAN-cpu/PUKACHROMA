@@ -95,32 +95,46 @@ a:active {
   top: 58px;
   left: 0;
   width: 220px;
-  background: rgba(200, 210, 230, 0.95);
+  background: rgba(200, 210, 230, 0.96);
   border: 2px solid #4ea2ff;
   display: none;
   flex-direction: column;
-  z-index: 20;
+  z-index: 50;
 }
 
 .menu-panel.show {
   display: flex;
 }
 
-.menu-panel a {
+.menu-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-main {
   color: white;
-  background: rgba(180, 190, 215, 0.9);
-  padding: 18px 16px;
-  border-bottom: 2px solid rgba(140, 150, 190, 0.9);
-  text-align: left;
+  background: rgba(180, 190, 215, 0.95);
+  padding: 16px;
+  border-bottom: 1px solid rgba(140, 150, 190, 0.9);
   font-size: 18px;
 }
 
-.menu-panel a:last-child {
-  border-bottom: none;
+.menu-sub {
+  display: flex;
+  flex-direction: column;
 }
 
-.menu-panel a:hover {
-  background: rgba(150, 165, 205, 1);
+.menu-sub a {
+  color: white;
+  background: rgba(165, 175, 205, 0.95);
+  padding: 14px 16px 14px 28px;
+  border-bottom: 1px solid rgba(140, 150, 190, 0.9);
+  font-size: 16px;
+}
+
+.menu-panel a:hover,
+.menu-main:hover {
+  background: rgba(145, 160, 200, 1);
 }
 
 /* ===== LOGO ===== */
@@ -274,6 +288,154 @@ a:active {
   font-size: clamp(22px, 2vw, 32px);
   text-align: center;
   padding: 20px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  opacity: 0.92;
+}
+
+/* ===== SHOP SYSTEM ===== */
+.shop-page {
+  min-height: 100vh;
+}
+
+.shop-all-theme {
+  background: #2628a8;
+}
+
+.shop-eureka-theme {
+  background: #e8e6d6;
+  color: #7a7a7a;
+}
+
+.shop-kuriru-theme {
+  background: #6d26b7;
+}
+
+.shop-renie-theme {
+  background: #e78bcb;
+}
+
+.shop-lanlan-theme {
+  background: #a7171b;
+}
+
+.shop-azure-theme {
+  background: #171772;
+}
+
+.shop-group-theme {
+  background: #2a48b8;
+}
+
+.shop-page.shop-eureka-theme a,
+.shop-page.shop-eureka-theme .shop-title,
+.shop-page.shop-eureka-theme .filter-button,
+.shop-page.shop-eureka-theme .filter-label,
+.shop-page.shop-eureka-theme .breadcrumb {
+  color: #7a7a7a;
+}
+
+.shop-content {
+  width: min(1100px, 90%);
+  margin: 0 auto;
+  padding: 28px 0 80px;
+}
+
+.filter-row {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.filter-label {
+  font-size: clamp(18px, 1.8vw, 30px);
+  margin-bottom: 10px;
+}
+
+.filter-button {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: clamp(18px, 1.8vw, 30px);
+  cursor: pointer;
+  padding: 0;
+}
+
+.filter-menu {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  display: none;
+  flex-direction: column;
+  z-index: 30;
+}
+
+.filter-menu.show {
+  display: flex;
+}
+
+.filter-menu a {
+  display: block;
+  min-width: 120px;
+  padding: 8px 14px;
+  color: white;
+  font-size: 18px;
+  text-align: left;
+}
+
+.filter-eureka {
+  background: #e8e6d6;
+  color: #7a7a7a !important;
+}
+
+.filter-kuriru {
+  background: #6d26b7;
+}
+
+.filter-renie {
+  background: #e78bcb;
+}
+
+.filter-lanlan {
+  background: #6f1013;
+}
+
+.filter-azure {
+  background: #171772;
+}
+
+.filter-group {
+  background: #95b6ff;
+}
+
+.shop-title {
+  font-size: clamp(28px, 3.5vw, 58px);
+  font-weight: 400;
+  margin-bottom: 34px;
+}
+
+.breadcrumb {
+  display: inline-block;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+
+.product-card {
+  aspect-ratio: 1 / 1;
+  background: #d9d9d9;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  opacity: 0.92;
 }
 
 /* ===== FORM ===== */
@@ -325,6 +487,10 @@ a:active {
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .filter-menu {
+    left: 0;
+  }
 }
 
 @media (max-width: 900px) {
@@ -345,6 +511,10 @@ a:active {
   .video-box {
     width: 88%;
     height: 220px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -377,5 +547,10 @@ a:active {
 
   .category-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
   }
 }
