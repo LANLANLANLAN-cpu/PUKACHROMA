@@ -73,18 +73,53 @@
       <h1>Register Now</h1>
 
       <div class="card dark">
-        <form class="login-form">
-          <input type="text" placeholder="User Name" />
-          <input type="email" placeholder="Email" />
-          <input type="password" placeholder="Password" />
-          <input type="password" placeholder="Confirm Password" />
+        <form class="login-form" id="registerForm">
+          <input type="text" id="displayName" placeholder="Display Name" required />
+          <input type="email" id="registerEmail" placeholder="Email" required />
+          <input type="password" id="registerPassword" placeholder="Password" required />
+          <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required />
           <button type="submit">Register</button>
         </form>
+
+        <p id="registerMessage" style="margin-top:16px;"></p>
       </div>
     </div>
   </section>
 
 </div>
+
 <script src="script.js"></script>
+
+<script type="module">
+  import { signUpWithEmail } from './auth.js'
+
+  const form = document.getElementById('registerForm')
+  const message = document.getElementById('registerMessage')
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    message.textContent = ''
+
+    const displayName = document.getElementById('displayName').value.trim()
+    const email = document.getElementById('registerEmail').value.trim()
+    const password = document.getElementById('registerPassword').value
+    const confirmPassword = document.getElementById('registerConfirmPassword').value
+
+    if (password !== confirmPassword) {
+      message.textContent = 'Passwords do not match.'
+      return
+    }
+
+    try {
+      await signUpWithEmail({ email, password, displayName })
+      message.textContent = 'Registration successful. You can now go to Log In.'
+      form.reset()
+    } catch (error) {
+      console.error(error)
+      message.textContent = error.message || 'Registration failed.'
+    }
+  })
+</script>
+
 </body>
 </html>
