@@ -14,24 +14,32 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* ===== HERO 全屏 ===== */
-.hero {
-  height: 100vh; /* 关键：占满一屏 */
-  background: #1f2395;
-  display: flex;
-  flex-direction: column;
+a {
+  text-decoration: none;
+  color: white;
 }
 
-/* NAV */
+/* ===== 页面统一 ===== */
+.page {
+  width: 100%;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding-bottom: 120px; /* ⭐关键：不是100vh，而是视觉占大 */
+}
+
 .navbar {
+  background: #b9e3df;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 5%;
-  background: #b9e3df;
+  padding: 20px 5%;
+  flex-wrap: wrap;
 }
 
-.nav-left, .nav-right {
+.nav-left,
+.nav-right {
   display: flex;
   gap: 20px;
   align-items: center;
@@ -55,23 +63,24 @@ body {
 
 .logo {
   background: #22398b;
-  padding: 8px 30px;
+  padding: 10px 40px;
+  font-size: 20px;
 }
 
 /* HERO 中间 */
 .hero-center {
-  flex: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 80px 20px 0;
 }
 
 .hero-box {
-  width: 80%;
-  max-width: 900px;
-  aspect-ratio: 16/9; /* 响应式比例 */
-  background: linear-gradient(rgba(65,132,178,0.7),rgba(65,132,178,0.7)),
-              url("https://images.unsplash.com/photo-1511632765486-a01980e01a18");
+  width: min(80%, 900px);
+  aspect-ratio: 16/9;
+  background:
+    linear-gradient(rgba(65,132,178,0.6), rgba(65,132,178,0.6)),
+    url("https://images.unsplash.com/photo-1511632765486-a01980e01a18");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -81,53 +90,54 @@ body {
   text-align: center;
 }
 
+.hero-box p {
+  font-size: clamp(18px, 2vw, 26px);
+}
+
 .hero-box h1 {
   position: absolute;
   bottom: 20px;
-  font-size: clamp(24px, 4vw, 48px);
+  font-size: clamp(28px, 4vw, 60px);
 }
 
-.hero-box p {
-  font-size: clamp(16px, 2vw, 24px);
-}
-
-/* ===== Scroll（不在首屏） ===== */
-.scroll {
-  text-align: center;
-  font-size: 40px;
-  padding: 40px 0;
-}
-
-/* ===== 第二屏 ===== */
+/* ===== INFO ===== */
 .info {
-  background: #1f2395;
   text-align: center;
-  padding: 60px 20px;
+  padding: 140px 20px 100px; /* ⭐空间感核心 */
 }
 
 .secret {
-  font-size: clamp(18px, 2.5vw, 32px);
+  font-size: clamp(24px, 3vw, 46px);
   border-bottom: 4px solid #5c7dff;
+  display: inline-block;
+  margin-bottom: 80px; /* ⭐关键间距 */
+}
+
+.event-title {
+  font-size: clamp(28px, 3vw, 42px);
+  margin-bottom: 40px;
 }
 
 .event {
-  width: min(600px, 80%);
-  height: 200px;
-  margin: 30px auto;
+  width: min(600px, 70%);
+  height: 220px;
+  margin: 0 auto;
   background: linear-gradient(#1d2d9f, #2f8ef5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* ===== 通用 section ===== */
-section {
-  padding: 80px 5%;
+/* ===== CONTENT ===== */
+.content {
+  padding: 100px 20px;
+  max-width: 1000px;
+  margin: auto;
 }
 
 h2 {
-  font-size: clamp(24px, 3vw, 40px);
   margin-bottom: 20px;
+  font-size: clamp(28px, 3vw, 48px);
 }
 
 .card {
@@ -157,8 +167,8 @@ form {
 
 input {
   padding: 10px;
-  background: rgba(255,255,255,0.1);
   border: none;
+  background: rgba(255,255,255,0.1);
   color: white;
 }
 
@@ -168,16 +178,4 @@ button {
   background: #b9e3df;
   color: black;
   cursor: pointer;
-}
-
-/* ===== 手机适配 ===== */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .hero-box {
-    width: 95%;
-  }
 }
