@@ -56,11 +56,12 @@ a:active {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: clamp(22px, 2.2vw, 44px);
+  gap: clamp(18px, 2vw, 34px);
+  flex-wrap: wrap;
 }
 
 .navbar a {
-  font-size: clamp(16px, 1.2vw, 20px);
+  font-size: clamp(16px, 1.05vw, 20px);
   white-space: nowrap;
 }
 
@@ -93,7 +94,7 @@ a:active {
   position: absolute;
   top: 58px;
   left: 0;
-  width: 210px;
+  width: 220px;
   background: rgba(200, 210, 230, 0.95);
   border: 2px solid #4ea2ff;
   display: none;
@@ -106,7 +107,7 @@ a:active {
 }
 
 .menu-panel a {
-  color: #ffffff;
+  color: white;
   background: rgba(180, 190, 215, 0.9);
   padding: 18px 16px;
   border-bottom: 2px solid rgba(140, 150, 190, 0.9);
@@ -130,7 +131,7 @@ a:active {
   justify-self: center;
 }
 
-/* ===== HERO ===== */
+/* ===== HOME HERO ===== */
 .hero-home {
   display: flex;
   justify-content: center;
@@ -167,7 +168,7 @@ a:active {
   white-space: nowrap;
 }
 
-/* ===== HOME SECTION ===== */
+/* ===== HOME INFO ===== */
 .info {
   text-align: center;
   padding: 90px 20px 120px;
@@ -219,7 +220,7 @@ a:active {
   margin-bottom: 40px;
 }
 
-/* ===== SUBPAGES ===== */
+/* ===== CONTENT PAGES ===== */
 .content-page {
   padding: 90px 20px 120px;
 }
@@ -256,9 +257,23 @@ a:active {
   color: white;
 }
 
-.sub-link {
-  margin-top: 60px;
-  text-align: left;
+/* ===== CATEGORY GRID ===== */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.category-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  background: linear-gradient(to bottom, #6772c9, #041a6b);
+  font-size: clamp(22px, 2vw, 32px);
+  text-align: center;
+  padding: 20px;
 }
 
 /* ===== FORM ===== */
@@ -290,15 +305,10 @@ a:active {
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
   .navbar {
     grid-template-columns: 1fr;
     justify-items: center;
-  }
-
-  .nav-left,
-  .nav-right {
-    justify-content: center;
   }
 
   .nav-side {
@@ -306,10 +316,18 @@ a:active {
     flex-wrap: wrap;
   }
 
-  .logo {
-    order: -1;
+  .nav-left,
+  .nav-right {
+    justify-content: center;
   }
 
+  .menu-panel {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 900px) {
   .hero-box {
     width: 92%;
   }
@@ -328,18 +346,16 @@ a:active {
     width: 88%;
     height: 220px;
   }
-
-  .menu-panel {
-    left: 50%;
-    transform: translateX(-50%);
-  }
 }
 
 @media (max-width: 640px) {
   .nav-links {
-    gap: 16px;
-    flex-wrap: wrap;
+    gap: 14px;
     justify-content: center;
+  }
+
+  .logo {
+    padding: 12px 38px;
   }
 
   .hero-home {
@@ -357,5 +373,9 @@ a:active {
   .event-large {
     height: 220px;
     margin-bottom: 80px;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr;
   }
 }
