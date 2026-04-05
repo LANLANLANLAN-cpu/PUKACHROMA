@@ -112,8 +112,7 @@
 
     try {
       await signUpWithEmail({ email, password, displayName })
-      message.textContent = 'Registration successful. You can now go to Log In.'
-      form.reset()
+      window.location.href = `email-check.html?email=${encodeURIComponent(email)}`
     } catch (error) {
       console.error(error)
       message.textContent = error.message || 'Registration failed.'
