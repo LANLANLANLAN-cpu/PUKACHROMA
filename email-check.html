@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Check Your Email</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="page">
+
+  <header class="navbar">
+    <div class="nav-side nav-left">
+      <nav class="nav-links">
+        <a href="about.html">About Us</a>
+        <a href="schedule.html">Schedule</a>
+      </nav>
+    </div>
+
+    <a href="index.html" class="logo">Logo</a>
+
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
+        <a href="shop.html">Shop</a>
+        <a href="login.html">Log In</a>
+        <a href="my-account.html">My Account</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content-page">
+    <div class="content-wrap">
+      <h1>Check Your Email</h1>
+
+      <div class="card light">
+        <p>We sent you a confirmation email.</p>
+        <br>
+        <p>Please open your inbox and click the verification link.</p>
+        <br>
+        <p id="emailHint"></p>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <button id="resendButton" style="padding: 12px 18px; border:none; cursor:pointer;">
+          Resend verification email
+        </button>
+      </div>
+
+      <p id="checkMessage" style="margin-top:16px;"></p>
+    </div>
+  </section>
+
+</div>
+
+<script type="module">
+  import { resendSignupEmail } from './auth.js'
+
+  const params = new URLSearchParams(window.location.search)
+  const email = params.get('email') || ''
+
+  const hint = document.getElementById('emailHint')
+  const button = document.getElementById('resendButton')
+  const message = document.getElementById('checkMessage')
+
+  if (email) {
+    hint.textContent = `Email: ${email}`
+  }
+
+  button.addEventListener('click', async () => {
+    message.textContent = ''
+
+    if (!email) {
+      message.textContent = 'Missing email address.'
+      return
+    }
+
+    try {
+      await resendSignupEmail(email)
+      message.textContent = 'Verification email sent again.'
+    } catch (error) {
+      console.error(error)
+      message.textContent = error.message || 'Failed to resend email.'
+    }
+  })
+</script>
+
+</body>
+</html>
