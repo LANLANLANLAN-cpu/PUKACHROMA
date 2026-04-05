@@ -353,7 +353,6 @@ button {
 .shop-page.shop-eureka-theme a,
 .shop-page.shop-eureka-theme .shop-title,
 .shop-page.shop-eureka-theme .filter-button,
-.shop-page.shop-eureka-theme .filter-label,
 .shop-page.shop-eureka-theme .breadcrumb {
   color: #7a7a7a;
 }
@@ -453,6 +452,37 @@ button {
 .product-card:hover {
   transform: translateY(-4px);
   opacity: 0.92;
+}
+
+/* 数据库真实商品卡片 */
+.product-real-card {
+  background: #d9d9d9;
+  overflow: hidden;
+  color: #111 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.product-info {
+  padding: 10px;
+}
+
+.product-info h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #111;
+}
+
+.product-info p {
+  font-size: 14px;
+  color: #333;
 }
 
 /* ===== FORM ===== */
