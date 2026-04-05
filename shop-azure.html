@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Azure</title>
+  <title>Shop / All / Azure</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-<div class="page">
+<div class="page shop-page shop-azure-theme">
 
 <header class="navbar">
+
   <div class="nav-side nav-left">
     <div class="menu-wrapper">
       <button class="menu-icon" id="menuToggle">
@@ -18,12 +19,48 @@
       </button>
 
       <div class="menu-panel" id="menuPanel">
-        <a href="about.html">About Us</a>
-        <a href="schedule.html">Schedule</a>
-        <a href="shop.html">Shop</a>
-        <a href="login.html">Log In</a>
-        <a href="my-account.html">My Account</a>
-        <a href="contact.html">Contact Us</a>
+        <div class="menu-section">
+          <a class="menu-main" href="about.html">About Us</a>
+          <div class="menu-sub">
+            <a href="about-puka-chroma.html">Puka Chroma</a>
+            <a href="about-members.html">Members</a>
+            <a href="about-staffs.html">Staffs</a>
+            <a href="about-past-performance.html">Past Performance</a>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <a class="menu-main" href="schedule.html">Schedule</a>
+        </div>
+
+        <div class="menu-section">
+          <a class="menu-main" href="shop.html">Shop</a>
+          <div class="menu-sub">
+            <a href="shop-all.html">All</a>
+            <a href="shop-eureka.html">Eureka</a>
+            <a href="shop-kuriru.html">Kuriru</a>
+            <a href="shop-lanlan.html">Lanlan</a>
+            <a href="shop-renie.html">Renie</a>
+            <a href="shop-azure.html">Azure</a>
+            <a href="shop-group.html">Group</a>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <a class="menu-main" href="login.html">Log In</a>
+          <div class="menu-sub">
+            <a href="login-register.html">Register Now</a>
+            <a href="login-account.html">I Have Account</a>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <a class="menu-main" href="my-account.html">My Account</a>
+        </div>
+
+        <div class="menu-section">
+          <a class="menu-main" href="contact.html">Contact Us</a>
+        </div>
       </div>
     </div>
 
@@ -38,21 +75,47 @@
   <div class="nav-side nav-right">
     <nav class="nav-links">
       <a href="shop.html">Shop</a>
-      <a href="login.html">Log In</a>
-      <a href="my-account.html">My Account</a>
       <a href="contact.html">Contact Us</a>
+      <a href="login.html">log in</a>
     </nav>
   </div>
+
 </header>
 
-<section class="content-page">
-  <div class="content-wrap">
-    <h1>Azure</h1>
+<section class="shop-content">
 
-    <div class="card mid">
-      Azure products here.
+  <div class="filter-row">
+    <div class="filter-label">Filter</div>
+    <button class="filter-button" id="filterToggle">Select category</button>
+
+    <div class="filter-menu" id="filterMenu">
+      <a href="shop-eureka.html" class="filter-eureka">Eureka</a>
+      <a href="shop-kuriru.html" class="filter-kuriru">Kuriru</a>
+      <a href="shop-renie.html" class="filter-renie">Renie</a>
+      <a href="shop-lanlan.html" class="filter-lanlan">Lanlan</a>
+      <a href="shop-azure.html" class="filter-azure">Azure</a>
+      <a href="shop-group.html" class="filter-group">Group</a>
     </div>
   </div>
+
+  <h1 class="shop-title">
+    <span class="breadcrumb">Shop / All / Azure</span>
+  </h1>
+
+  <div class="product-grid">
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+    <a href="#" class="product-card"></a>
+  </div>
+
 </section>
 
 </div>
