@@ -1,181 +1,75 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   background: #1f2395;
   color: white;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
+  margin: 0;
 }
 
 a {
-  text-decoration: none;
   color: white;
-}
-
-/* ===== 页面统一 ===== */
-.page {
-  width: 100%;
-}
-
-/* ===== HERO ===== */
-.hero {
-  padding-bottom: 120px; /* ⭐关键：不是100vh，而是视觉占大 */
+  text-decoration: none;
 }
 
 .navbar {
   background: #b9e3df;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 20px 5%;
-  flex-wrap: wrap;
 }
 
-.nav-left,
-.nav-right {
+.nav-left, .nav-right {
   display: flex;
   gap: 20px;
-  align-items: center;
-}
-
-.menu-icon {
-  width: 30px;
-  height: 30px;
-  background: rgba(255,255,255,0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  padding: 5px;
-}
-
-.menu-icon span {
-  height: 2px;
-  background: white;
 }
 
 .logo {
   background: #22398b;
   padding: 10px 40px;
-  font-size: 20px;
 }
 
-/* HERO 中间 */
+/* HERO */
 .hero-center {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 80px 20px 0;
+  padding: 80px 0;
 }
 
 .hero-box {
-  width: min(80%, 900px);
+  width: 70%;
   aspect-ratio: 16/9;
-  background:
-    linear-gradient(rgba(65,132,178,0.6), rgba(65,132,178,0.6)),
-    url("https://images.unsplash.com/photo-1511632765486-a01980e01a18");
+  background: linear-gradient(rgba(65,132,178,0.6), rgba(65,132,178,0.6)),
+              url("https://images.unsplash.com/photo-1511632765486-a01980e01a18");
   background-size: cover;
-  background-position: center;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   position: relative;
-  text-align: center;
-}
-
-.hero-box p {
-  font-size: clamp(18px, 2vw, 26px);
 }
 
 .hero-box h1 {
   position: absolute;
   bottom: 20px;
-  font-size: clamp(28px, 4vw, 60px);
 }
 
-/* ===== INFO ===== */
+/* INFO */
 .info {
   text-align: center;
-  padding: 140px 20px 100px; /* ⭐空间感核心 */
+  padding: 120px 20px;
 }
 
 .secret {
-  font-size: clamp(24px, 3vw, 46px);
+  font-size: 30px;
   border-bottom: 4px solid #5c7dff;
   display: inline-block;
-  margin-bottom: 80px; /* ⭐关键间距 */
-}
-
-.event-title {
-  font-size: clamp(28px, 3vw, 42px);
-  margin-bottom: 40px;
+  margin-bottom: 60px;
 }
 
 .event {
-  width: min(600px, 70%);
-  height: 220px;
-  margin: 0 auto;
+  width: 60%;
+  height: 200px;
+  margin: auto;
   background: linear-gradient(#1d2d9f, #2f8ef5);
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-/* ===== CONTENT ===== */
-.content {
-  padding: 100px 20px;
-  max-width: 1000px;
-  margin: auto;
-}
-
-h2 {
-  margin-bottom: 20px;
-  font-size: clamp(28px, 3vw, 48px);
-}
-
-.card {
-  padding: 25px;
-  border-radius: 12px;
-}
-
-.light {
-  background: #b9e3df;
-  color: black;
-}
-
-.dark {
-  background: #22398b;
-}
-
-.mid {
-  background: #4184b2;
-}
-
-/* ===== 表单 ===== */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-input {
-  padding: 10px;
-  border: none;
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  background: #b9e3df;
-  color: black;
-  cursor: pointer;
+  justify-content: center;
 }
