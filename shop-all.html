@@ -124,9 +124,9 @@
     data.forEach(product => {
       const card = document.createElement('a')
       card.className = 'product-card product-real-card'
-      card.href = '#'
+      card.href = `product.html?id=${product.id}`
 
-      const imageUrl = product.cover_image || 'https://via.placeholder.com/300'
+      const imageUrl = product.cover_image || 'https://via.placeholder.com/600x600'
       const priceText = product.price != null ? `$${product.price}` : ''
 
       card.innerHTML = `
