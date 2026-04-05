@@ -71,11 +71,65 @@
   <section class="content-page">
     <div class="content-wrap">
       <h1>My Account</h1>
-      <div class="card light">Your account information will appear here.</div>
+
+      <div class="card light" id="accountCard">
+        Loading account...
+      </div>
+
+      <div style="margin-top: 24px;">
+        <button id="logoutButton" style="padding: 12px 18px; border:none; cursor:pointer;">
+          Log Out
+        </button>
+      </div>
     </div>
   </section>
 
 </div>
+
 <script src="script.js"></script>
+
+<script type="module">
+  import { getCurrentUser, getMyProfile, signOutUser } from './auth.js'
+
+  const accountCard = document.getElementById('accountCard')
+  const logoutButton = document.getElementById('logoutButton')
+
+  async function loadAccount() {
+    try {
+      const user = await getCurrentUser()
+
+      if (!user) {
+        accountCard.innerHTML = 'You are not logged in.'
+        return
+      }
+
+      const profile = await getMyProfile()
+
+      accountCard.innerHTML = `
+        <p><strong>Email:</strong> ${profile?.email || user.email || ''}</p>
+        <br>
+        <p><strong>Display Name:</strong> ${profile?.display_name || ''}</p>
+        <br>
+        <p><strong>Role:</strong> ${profile?.role || 'user'}</p>
+      `
+    } catch (error) {
+      console.error(error)
+      accountCard.innerHTML = 'Failed to load account.'
+    }
+  }
+
+  logoutButton.addEventListener('click', async () => {
+    try {
+      await signOutUser()
+      window.location.href = 'login.html'
+    } catch (error) {
+      console.error(error)
+      alert('Failed to log out.')
+    }
+  })
+
+  loadAccount()
+</script>
+
 </body>
 </html>
