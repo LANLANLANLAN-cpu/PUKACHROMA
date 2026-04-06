@@ -65,6 +65,12 @@
       <a href="my-account.html">My Account</a>
       <a href="contact.html">Contact Us</a>
     </nav>
+
+    <div class="top-icon-links">
+      <a href="cart.html" class="cart-link" aria-label="Cart">
+        <span id="cartCount" class="cart-count"></span>
+      </a>
+    </div>
   </div>
 
 </header>
@@ -84,9 +90,7 @@
     </div>
   </div>
 
-  <h1 class="shop-title">
-    <span class="breadcrumb">Shop / All</span>
-  </h1>
+  <h1 class="shop-title"><span class="breadcrumb">Shop / All</span></h1>
 
   <div class="product-grid" id="productGrid"></div>
 
@@ -97,48 +101,35 @@
 <script src="script.js"></script>
 
 <script type="module">
-  import { supabase } from './supabase.js'
+  import { fetchAllActiveProducts, formatPrice, getSafeCoverImage } from './shop-data.js'
+  import { renderCartCount } from './cart.js'
 
   async function loadProducts() {
-    const productGrid = document.getElementById('productGrid')
+    const grid = document.getElementById('productGrid')
 
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
+    try {
+      const products = await fetchAllActiveProducts()
 
-    if (error) {
-      console.error('Load products error:', error)
-      productGrid.innerHTML = '<p>Failed to load products.</p>'
-      return
+      if (!products.length) {
+        grid.innerHTML = '<p>No products yet.</p>'
+        return
+      }
+
+      grid.innerHTML = products.map(product => `
+        <a class="product-card product-real-card" href="product.html?id=${product.id}">
+          <img src="${getSafeCoverImage(product)}" alt="${product.name || ''}" class="product-thumb">
+          <div class="product-info">
+            <h3>${product.name || ''}</h3>
+            <p>${formatPrice(product.price)}</p>
+          </div>
+        </a>
+      `).join('')
+
+      await renderCartCount()
+    } catch (error) {
+      console.error(error)
+      grid.innerHTML = `<p>Failed to load products.</p><p>${error.message || ''}</p>`
     }
-
-    if (!data || data.length === 0) {
-      productGrid.innerHTML = '<p>No products yet.</p>'
-      return
-    }
-
-    productGrid.innerHTML = ''
-
-    data.forEach(product => {
-      const card = document.createElement('a')
-      card.className = 'product-card product-real-card'
-      card.href = `product.html?id=${product.id}`
-
-      const imageUrl = product.cover_image || 'https://via.placeholder.com/600x600'
-      const priceText = product.price != null ? `$${product.price}` : ''
-
-      card.innerHTML = `
-        <img src="${imageUrl}" alt="${product.name || ''}" class="product-thumb">
-        <div class="product-info">
-          <h3>${product.name || ''}</h3>
-          <p>${priceText}</p>
-        </div>
-      `
-
-      productGrid.appendChild(card)
-    })
   }
 
   loadProducts()
