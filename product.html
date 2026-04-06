@@ -8,191 +8,284 @@
 </head>
 
 <body>
-<div class="page shop-page shop-all-theme">
+<div class="page shop-page shop-all-theme" id="productPage">
 
-<header class="navbar">
+  <header class="navbar">
 
-  <div class="nav-side nav-left">
-    <div class="menu-wrapper">
-      <button class="menu-icon" id="menuToggle">
-        <span></span><span></span><span></span>
-      </button>
+    <div class="nav-side nav-left">
+      <div class="menu-wrapper">
+        <button class="menu-icon" id="menuToggle" aria-label="Open menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-      <div class="menu-panel" id="menuPanel">
-        <button class="menu-main" type="button" data-target="aboutSubPanel">About Us +</button>
-        <a class="menu-main" href="schedule.html">Schedule</a>
-        <button class="menu-main" type="button" data-target="shopSubPanel">Shop +</button>
-        <button class="menu-main" type="button" data-target="loginSubPanel">Log In +</button>
-        <a class="menu-main" href="my-account.html">My Account</a>
-        <a class="menu-main" href="contact.html">Contact Us</a>
+        <div class="menu-panel" id="menuPanel">
+          <button class="menu-main" type="button" data-target="aboutSubPanel">About Us +</button>
+          <a class="menu-main" href="schedule.html">Schedule</a>
+          <button class="menu-main" type="button" data-target="shopSubPanel">Shop +</button>
+          <button class="menu-main" type="button" data-target="loginSubPanel">Log In +</button>
+          <a class="menu-main" href="my-account.html">My Account</a>
+          <a class="menu-main" href="contact.html">Contact Us</a>
+        </div>
+
+        <div class="menu-subpanel" id="aboutSubPanel">
+          <a href="about-puka-chroma.html">Puka Chroma</a>
+          <a href="about-members.html">Members</a>
+          <a href="about-staffs.html">Staffs</a>
+          <a href="about-past-performance.html">Past Performance</a>
+        </div>
+
+        <div class="menu-subpanel" id="shopSubPanel">
+          <a href="shop-all.html">All</a>
+          <a href="shop-eureka.html">Eureka</a>
+          <a href="shop-kuriru.html">Kuriru</a>
+          <a href="shop-lanlan.html">Lanlan</a>
+          <a href="shop-renie.html">Renie</a>
+          <a href="shop-azure.html">Azure</a>
+          <a href="shop-group.html">Group</a>
+        </div>
+
+        <div class="menu-subpanel" id="loginSubPanel">
+          <a href="login-register.html">Register Now</a>
+          <a href="login-account.html">I Have Account</a>
+        </div>
       </div>
 
-      <div class="menu-subpanel" id="aboutSubPanel">
-        <a href="about-puka-chroma.html">Puka Chroma</a>
-        <a href="about-members.html">Members</a>
-        <a href="about-staffs.html">Staffs</a>
-        <a href="about-past-performance.html">Past Performance</a>
-      </div>
+      <nav class="nav-links">
+        <a href="about.html">About Us</a>
+        <a href="schedule.html">Schedule</a>
+      </nav>
+    </div>
 
-      <div class="menu-subpanel" id="shopSubPanel">
-        <a href="shop-all.html">All</a>
-        <a href="shop-eureka.html">Eureka</a>
-        <a href="shop-kuriru.html">Kuriru</a>
-        <a href="shop-lanlan.html">Lanlan</a>
-        <a href="shop-renie.html">Renie</a>
-        <a href="shop-azure.html">Azure</a>
-        <a href="shop-group.html">Group</a>
-      </div>
+    <a href="index.html" class="logo">Logo</a>
 
-      <div class="menu-subpanel" id="loginSubPanel">
-        <a href="login-register.html">Register Now</a>
-        <a href="login-account.html">I Have Account</a>
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
+        <a href="shop.html">Shop</a>
+        <a href="login.html">Log In</a>
+        <a href="my-account.html">My Account</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+
+      <div class="top-icon-links">
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <span id="cartCount" class="cart-count"></span>
+        </a>
       </div>
     </div>
 
-    <nav class="nav-links">
-      <a href="about.html">About Us</a>
-      <a href="schedule.html">Schedule</a>
-    </nav>
-  </div>
+  </header>
 
-  <a href="index.html" class="logo">Logo</a>
-
-  <div class="nav-side nav-right">
-    <nav class="nav-links">
-      <a href="shop.html">Shop</a>
-      <a href="login.html">Log In</a>
-      <a href="my-account.html">My Account</a>
-      <a href="contact.html">Contact Us</a>
-    </nav>
-  </div>
-
-</header>
-
-<section class="content-page">
-  <div class="content-wrap" id="productDetail">
-    <h1>Loading...</h1>
-  </div>
-</section>
+  <section class="content-page">
+    <div class="content-wrap" id="productDetail">
+      <h1>Loading...</h1>
+    </div>
+  </section>
 
 </div>
 
 <script src="script.js"></script>
 
 <script type="module">
-  import { supabase } from './supabase.js'
+  import { fetchProductById, normalizeImages, youtubeToEmbed, getProductThemeClass, formatPrice } from './shop-data.js'
+  import { addToCart, renderCartCount } from './cart.js'
+  import { getCurrentUser } from './auth.js'
+
+  const page = document.getElementById('productPage')
+  const container = document.getElementById('productDetail')
 
   function getProductId() {
     const params = new URLSearchParams(window.location.search)
     return params.get('id')
   }
 
-  function normalizeImages(images, coverImage) {
-    let imageList = []
+  function setPageTheme(product) {
+    const allThemeClasses = [
+      'shop-all-theme',
+      'shop-eureka-theme',
+      'shop-kuriru-theme',
+      'shop-renie-theme',
+      'shop-lanlan-theme',
+      'shop-azure-theme',
+      'shop-group-theme'
+    ]
 
-    if (Array.isArray(images)) {
-      imageList = images
-    } else if (typeof images === 'string') {
-      try {
-        const parsed = JSON.parse(images)
-        if (Array.isArray(parsed)) imageList = parsed
-      } catch {
-        imageList = []
-      }
-    }
-
-    if (coverImage && !imageList.includes(coverImage)) {
-      imageList.unshift(coverImage)
-    }
-
-    return imageList
+    allThemeClasses.forEach(cls => page.classList.remove(cls))
+    page.classList.add(getProductThemeClass(product))
   }
 
-  function youtubeToEmbed(url) {
-    if (!url) return null
+  function buildGallery(images) {
+    return images.map((url, index) => `
+      <img
+        src="${url}"
+        alt="Product image ${index + 1}"
+        class="product-detail-thumb"
+        data-thumb="${url}"
+      >
+    `).join('')
+  }
 
-    try {
-      const parsed = new URL(url)
+  function bindThumbnailSwitch() {
+    const mainImage = document.getElementById('mainProductImage')
+    const thumbs = document.querySelectorAll('.product-detail-thumb')
 
-      if (parsed.hostname.includes('youtube.com')) {
-        const id = parsed.searchParams.get('v')
-        if (id) return `https://www.youtube.com/embed/${id}`
+    thumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const newSrc = thumb.getAttribute('data-thumb')
+        if (mainImage && newSrc) {
+          mainImage.src = newSrc
+        }
+      })
+    })
+  }
+
+  function bindAddToCart(productId) {
+    const button = document.getElementById('addToCartButton')
+    const message = document.getElementById('addCartMessage')
+
+    if (!button) return
+
+    button.addEventListener('click', async () => {
+      message.textContent = ''
+
+      try {
+        const user = await getCurrentUser()
+
+        if (!user) {
+          message.textContent = 'Please log in first.'
+          setTimeout(() => {
+            window.location.href = 'login-account.html'
+          }, 900)
+          return
+        }
+
+        await addToCart(productId, 1)
+        message.textContent = 'Added to cart.'
+        await renderCartCount()
+      } catch (error) {
+        console.error(error)
+        message.textContent = error.message || 'Failed to add to cart.'
       }
-
-      if (parsed.hostname.includes('youtu.be')) {
-        const id = parsed.pathname.replace('/', '')
-        if (id) return `https://www.youtube.com/embed/${id}`
-      }
-
-      return null
-    } catch {
-      return null
-    }
+    })
   }
 
   async function loadProductDetail() {
     const productId = getProductId()
-    const container = document.getElementById('productDetail')
 
     if (!productId) {
       container.innerHTML = '<h1>Product not found.</h1>'
       return
     }
 
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('id', productId)
-      .single()
+    try {
+      const product = await fetchProductById(productId)
+      setPageTheme(product)
 
-    if (error || !data) {
-      console.error(error)
-      container.innerHTML = '<h1>Failed to load product.</h1>'
-      return
-    }
+      const images = normalizeImages(product.images, product.cover_image)
+      const embedUrl = youtubeToEmbed(product.youtube_url)
+      const priceText = formatPrice(product.price)
+      const sizeText = product.size || '—'
+      const stockText = product.stock ?? '—'
+      const categoryText = product.category || '—'
+      const descText = product.description || 'No description yet.'
+      const purchaseMethod = product.purchase_method || 'Please contact us.'
+      const purchaseLink = product.purchase_link || ''
 
-    const images = normalizeImages(data.images, data.cover_image)
-    const embedUrl = youtubeToEmbed(data.youtube_url)
-    const priceText = data.price != null ? `$${data.price}` : ''
-    const stockText = data.stock != null ? data.stock : ''
-    const sizeText = data.size || ''
-    const descText = data.description || ''
-    const categoryText = data.category || ''
-    const purchaseMethod = data.purchase_method || ''
+      container.innerHTML = `
+        <div class="product-detail-layout">
 
-    container.innerHTML = `
-      <div class="product-detail-layout">
-        <div class="product-detail-left">
-          <img src="${images[0] || 'https://via.placeholder.com/700x700'}" alt="${data.name || ''}" class="product-detail-main-image">
-
-          <div class="product-detail-gallery">
-            ${images.map(url => `<img src="${url}" alt="" class="product-detail-thumb">`).join('')}
-          </div>
-        </div>
-
-        <div class="product-detail-right">
-          <h1>${data.name || ''}</h1>
-          <p class="product-detail-price">${priceText}</p>
-          <p><strong>Category:</strong> ${categoryText}</p>
-          <p><strong>Size:</strong> ${sizeText}</p>
-          <p><strong>Stock:</strong> ${stockText}</p>
-          <p><strong>Description:</strong></p>
-          <p>${descText}</p>
-          <p><strong>Purchase:</strong> ${purchaseMethod}</p>
-
-          ${embedUrl ? `
-            <div class="product-video-wrap">
-              <iframe
-                src="${embedUrl}"
-                title="Product video"
-                frameborder="0"
-                allowfullscreen>
-              </iframe>
+          <div class="product-detail-left">
+            <div class="product-image-frame">
+              <img
+                src="${images[0]}"
+                alt="${product.name || ''}"
+                class="product-detail-main-image"
+                id="mainProductImage"
+              >
             </div>
-          ` : ''}
+
+            <div class="product-thumb-strip-wrap">
+              <div class="product-detail-gallery">
+                ${buildGallery(images)}
+              </div>
+              <div class="product-thumb-line"></div>
+            </div>
+          </div>
+
+          <div class="product-detail-right">
+            <h1 class="product-name-large">${product.name || ''}</h1>
+            <div class="product-name-underline"></div>
+
+            <p class="product-detail-price">${priceText}</p>
+
+            <div class="product-meta-block">
+              <div class="product-meta-row">
+                <strong>Category</strong>
+                <span>${categoryText}</span>
+              </div>
+
+              <div class="product-meta-row">
+                <strong>Size</strong>
+                <span>${sizeText}</span>
+              </div>
+
+              <div class="product-meta-row">
+                <strong>Stock</strong>
+                <span>${stockText}</span>
+              </div>
+            </div>
+
+            <div class="product-desc-block">
+              <div class="product-desc-title"><strong>Description</strong></div>
+              <p class="product-desc-text">${descText}</p>
+            </div>
+
+            <div class="product-desc-block">
+              <div class="product-desc-title"><strong>Purchase Method</strong></div>
+              <p class="product-desc-text">${purchaseMethod}</p>
+            </div>
+
+            <div class="product-action-row">
+              <button class="add-cart-button" id="addToCartButton">Add to Cart</button>
+
+              ${purchaseLink ? `
+                <a href="${purchaseLink}" target="_blank" class="checkout-link-button">
+                  Purchase Link
+                </a>
+              ` : ''}
+
+              <span id="addCartMessage"></span>
+            </div>
+
+            ${embedUrl ? `
+              <div class="product-video-wrap">
+                <iframe
+                  src="${embedUrl}"
+                  title="Product video"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            ` : ''}
+
+          </div>
+
         </div>
-      </div>
-    `
+      `
+
+      bindThumbnailSwitch()
+      bindAddToCart(product.id)
+      await renderCartCount()
+
+    } catch (error) {
+      console.error(error)
+      container.innerHTML = `
+        <h1>Failed to load product.</h1>
+        <p>${error.message || 'Unknown error'}</p>
+      `
+    }
   }
 
   loadProductDetail()
