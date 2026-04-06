@@ -22,7 +22,6 @@
     <div class="nav-side nav-right">
       <nav class="nav-links">
         <a href="my-account.html">My Account</a>
-        <a href="cart.html">Cart</a>
       </nav>
     </div>
   </header>
@@ -31,41 +30,42 @@
     <div class="content-wrap">
       <h1>Admin Products</h1>
 
-      <div class="card dark" style="margin-bottom: 28px;">
+      <div class="card dark" style="margin-bottom: 32px;">
         <form class="login-form" id="productForm">
           <input type="hidden" id="productId" />
 
-          <input type="text" id="productName" placeholder="Product Name" required />
-          <input type="number" step="0.01" id="productPrice" placeholder="Price" />
-          <textarea id="productDescription" placeholder="Description" style="padding:14px 16px; min-height:120px;"></textarea>
-          <input type="text" id="productSize" placeholder="Size" />
-          <input type="number" id="productStock" placeholder="Stock" />
-          <input type="text" id="productCategory" placeholder="Category (example: lanlan or lanlan,group)" />
-          <input type="text" id="productStatus" placeholder="Status (active / draft / sold_out / hidden)" value="active" />
-          <input type="text" id="productPurchaseMethod" placeholder="Purchase Method" />
-          <input type="text" id="productPurchaseLink" placeholder="Purchase Link" />
-          <input type="text" id="productYoutubeUrl" placeholder="YouTube URL" />
-          <input type="text" id="productSlug" placeholder="Slug (optional)" />
-
-          <label style="margin-top: 6px;">Cover Image Upload</label>
+          <input type="text" id="name" placeholder="Product Name" required />
+          <input type="number" id="price" placeholder="Price" step="0.01" />
+          <textarea id="description" placeholder="Description" style="padding:14px 16px; min-height:120px;"></textarea>
+          <input type="text" id="size" placeholder="Size" />
+          <input type="number" id="stock" placeholder="Stock" />
+          <input type="text" id="category" placeholder="Category (example: lanlan or lanlan,group)" />
+          
+          <label>Cover Image File</label>
           <input type="file" id="coverFile" accept="image/*" />
 
-          <label style="margin-top: 6px;">Additional Images Upload</label>
-          <input type="file" id="galleryFiles" accept="image/*" multiple />
+          <label>Extra Images</label>
+          <input type="file" id="extraFiles" accept="image/*" multiple />
 
-          <label style="margin-top: 6px;">Or paste image URLs JSON array</label>
-          <textarea id="productImages" placeholder='["https://...jpg","https://...jpg"]' style="padding:14px 16px; min-height:100px;"></textarea>
+          <input type="text" id="youtube_url" placeholder="YouTube URL" />
+          <input type="text" id="purchase_method" placeholder="Purchase Method" />
+          <input type="text" id="purchase_link" placeholder="Purchase Link" />
+          <input type="text" id="status" placeholder="Status (active / draft / sold_out / hidden)" />
 
-          <button type="submit" id="saveProductButton">Save Product</button>
-          <button type="button" id="resetFormButton">Reset Form</button>
+          <button type="submit" id="saveButton">Save Product</button>
         </form>
+
+        <div style="margin-top: 16px; display:flex; gap:12px; flex-wrap:wrap;">
+          <button id="resetFormButton" style="padding:12px 18px; border:none; cursor:pointer;">Reset Form</button>
+          <button id="logoutAdminButton" style="padding:12px 18px; border:none; cursor:pointer;">Log Out</button>
+        </div>
 
         <p id="adminMessage" style="margin-top:16px;"></p>
       </div>
 
       <div class="card light">
-        <h2 style="margin-bottom:20px;">Existing Products</h2>
-        <div id="adminProductsList">Loading...</div>
+        <h2 style="margin-bottom: 20px;">All Products</h2>
+        <div id="adminProductsList"></div>
       </div>
     </div>
   </section>
@@ -74,13 +74,14 @@
 
 <script type="module">
   import { supabase } from './supabase.js'
-  import { getCurrentUser, getMyProfile } from './auth.js'
+  import { getCurrentUser, getMyProfile, signOutUser } from './auth.js'
   import { normalizeImages, formatPrice } from './shop-data.js'
 
-  const form = document.getElementById('productForm')
-  const message = document.getElementById('adminMessage')
-  const productsList = document.getElementById('adminProductsList')
+  const productForm = document.getElementById('productForm')
+  const adminMessage = document.getElementById('adminMessage')
+  const adminProductsList = document.getElementById('adminProductsList')
   const resetFormButton = document.getElementById('resetFormButton')
+  const logoutAdminButton = document.getElementById('logoutAdminButton')
 
   async function requireAdmin() {
     const user = await getCurrentUser()
@@ -91,76 +92,71 @@
 
     const profile = await getMyProfile()
     if (!profile || !['admin', 'owner'].includes(profile.role)) {
-      message.textContent = 'You do not have admin access.'
-      throw new Error('No admin access')
+      alert('You do not have admin access.')
+      window.location.href = 'index.html'
+      return null
     }
 
     return { user, profile }
   }
 
-  async function uploadImage(file) {
+  async function uploadImage(file, folder = 'products') {
+    if (!file) return null
+
     const fileExt = file.name.split('.').pop()
-    const fileName = `${crypto.randomUUID()}.${fileExt}`
-    const filePath = `products/${fileName}`
+    const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`
 
     const { error } = await supabase.storage
       .from('images')
-      .upload(filePath, file, {
-        upsert: false
-      })
+      .upload(fileName, file)
 
     if (error) throw error
 
     const { data } = supabase.storage
       .from('images')
-      .getPublicUrl(filePath)
+      .getPublicUrl(fileName)
 
     return data.publicUrl
   }
 
-  async function uploadMultipleImages(fileList) {
+  async function uploadMultipleImages(fileList, folder = 'products') {
     const files = Array.from(fileList || [])
     const urls = []
 
     for (const file of files) {
-      const url = await uploadImage(file)
-      urls.push(url)
+      const url = await uploadImage(file, folder)
+      if (url) urls.push(url)
     }
 
     return urls
   }
 
+  function escapeHtml(text = '') {
+    return String(text)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;')
+  }
+
   function fillForm(product) {
     document.getElementById('productId').value = product.id || ''
-    document.getElementById('productName').value = product.name || ''
-    document.getElementById('productPrice').value = product.price ?? ''
-    document.getElementById('productDescription').value = product.description || ''
-    document.getElementById('productSize').value = product.size || ''
-    document.getElementById('productStock').value = product.stock ?? ''
-    document.getElementById('productCategory').value = product.category || ''
-    document.getElementById('productStatus').value = product.status || 'active'
-    document.getElementById('productPurchaseMethod').value = product.purchase_method || ''
-    document.getElementById('productPurchaseLink').value = product.purchase_link || ''
-    document.getElementById('productYoutubeUrl').value = product.youtube_url || ''
-    document.getElementById('productSlug').value = product.slug || ''
-
-    let imagesText = ''
-    if (Array.isArray(product.images)) {
-      imagesText = JSON.stringify(product.images, null, 2)
-    } else if (typeof product.images === 'string') {
-      imagesText = product.images
-    }
-    document.getElementById('productImages').value = imagesText
-
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    document.getElementById('name').value = product.name || ''
+    document.getElementById('price').value = product.price ?? ''
+    document.getElementById('description').value = product.description || ''
+    document.getElementById('size').value = product.size || ''
+    document.getElementById('stock').value = product.stock ?? ''
+    document.getElementById('category').value = product.category || ''
+    document.getElementById('youtube_url').value = product.youtube_url || ''
+    document.getElementById('purchase_method').value = product.purchase_method || ''
+    document.getElementById('purchase_link').value = product.purchase_link || ''
+    document.getElementById('status').value = product.status || ''
   }
 
   function resetForm() {
-    form.reset()
+    productForm.reset()
     document.getElementById('productId').value = ''
-    document.getElementById('productStatus').value = 'active'
-    document.getElementById('productImages').value = ''
-    message.textContent = ''
   }
 
   async function loadProducts() {
@@ -170,33 +166,36 @@
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error(error)
-      productsList.innerHTML = `<p>Failed to load products.</p><p>${error.message}</p>`
+      adminProductsList.innerHTML = `<p>${error.message}</p>`
       return
     }
 
     if (!data || data.length === 0) {
-      productsList.innerHTML = '<p>No products yet.</p>'
+      adminProductsList.innerHTML = '<p>No products yet.</p>'
       return
     }
 
-    productsList.innerHTML = data.map(product => `
-      <div style="display:grid; grid-template-columns:120px 1fr auto; gap:18px; align-items:center; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid rgba(0,0,0,0.15);">
-        <img src="${product.cover_image || 'https://via.placeholder.com/200'}" alt="${product.name || ''}" style="width:120px; height:120px; object-fit:cover; background:#ddd;">
-        <div>
-          <h3 style="margin-bottom:8px;">${product.name || ''}</h3>
-          <p style="margin-bottom:6px;">${formatPrice(product.price)}</p>
-          <p style="margin-bottom:6px;">Category: ${product.category || ''}</p>
-          <p style="margin-bottom:6px;">Status: ${product.status || ''}</p>
-          <p>ID: ${product.id}</p>
+    adminProductsList.innerHTML = data.map(product => {
+      const images = normalizeImages(product.images, product.cover_image)
+      return `
+        <div style="display:grid; grid-template-columns:120px 1fr auto; gap:20px; margin-bottom:20px; padding:16px; border:1px solid #ccc;">
+          <img src="${images[0]}" alt="${escapeHtml(product.name || '')}" style="width:120px; height:120px; object-fit:cover; background:#ddd;">
+          
+          <div>
+            <h3 style="margin-bottom:10px;">${escapeHtml(product.name || '')}</h3>
+            <p style="margin-bottom:6px;">${formatPrice(product.price)}</p>
+            <p style="margin-bottom:6px;">Category: ${escapeHtml(product.category || '')}</p>
+            <p style="margin-bottom:6px;">Status: ${escapeHtml(product.status || '')}</p>
+            <p style="margin-bottom:6px;">Stock: ${product.stock ?? ''}</p>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="edit-product-btn" data-id="${product.id}" style="padding:10px 12px; border:none; cursor:pointer;">Edit</button>
+            <button class="delete-product-btn" data-id="${product.id}" style="padding:10px 12px; border:none; cursor:pointer;">Delete</button>
+          </div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <button class="edit-product-btn" data-id="${product.id}">Edit</button>
-          <button class="delete-product-btn" data-id="${product.id}">Delete</button>
-          <a href="product.html?id=${product.id}" target="_blank">Open</a>
-        </div>
-      </div>
-    `).join('')
+      `
+    }).join('')
 
     bindAdminButtons(data)
   }
@@ -206,15 +205,18 @@
       button.addEventListener('click', () => {
         const id = Number(button.getAttribute('data-id'))
         const product = products.find(item => Number(item.id) === id)
-        if (product) fillForm(product)
+        if (product) {
+          fillForm(product)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
       })
     })
 
     document.querySelectorAll('.delete-product-btn').forEach(button => {
       button.addEventListener('click', async () => {
         const id = Number(button.getAttribute('data-id'))
-        const ok = window.confirm('Delete this product?')
-        if (!ok) return
+        const yes = confirm('Delete this product?')
+        if (!yes) return
 
         try {
           const { error } = await supabase
@@ -224,128 +226,112 @@
 
           if (error) throw error
 
-          message.textContent = 'Product deleted.'
+          adminMessage.textContent = 'Product deleted.'
           await loadProducts()
         } catch (error) {
           console.error(error)
-          message.textContent = error.message || 'Delete failed.'
+          adminMessage.textContent = error.message || 'Delete failed.'
         }
       })
     })
   }
 
-  form.addEventListener('submit', async (event) => {
+  productForm.addEventListener('submit', async (event) => {
     event.preventDefault()
-    message.textContent = ''
+    adminMessage.textContent = ''
 
     try {
-      await requireAdmin()
-
-      const productId = document.getElementById('productId').value.trim()
-      const name = document.getElementById('productName').value.trim()
-      const price = document.getElementById('productPrice').value.trim()
-      const description = document.getElementById('productDescription').value.trim()
-      const size = document.getElementById('productSize').value.trim()
-      const stock = document.getElementById('productStock').value.trim()
-      const category = document.getElementById('productCategory').value.trim().toLowerCase()
-      const status = document.getElementById('productStatus').value.trim().toLowerCase()
-      const purchaseMethod = document.getElementById('productPurchaseMethod').value.trim()
-      const purchaseLink = document.getElementById('productPurchaseLink').value.trim()
-      const youtubeUrl = document.getElementById('productYoutubeUrl').value.trim()
-      const slug = document.getElementById('productSlug').value.trim()
+      const productId = document.getElementById('productId').value
+      const name = document.getElementById('name').value.trim()
+      const price = document.getElementById('price').value
+      const description = document.getElementById('description').value.trim()
+      const size = document.getElementById('size').value.trim()
+      const stock = document.getElementById('stock').value
+      const category = document.getElementById('category').value.trim().toLowerCase()
+      const youtube_url = document.getElementById('youtube_url').value.trim()
+      const purchase_method = document.getElementById('purchase_method').value.trim()
+      const purchase_link = document.getElementById('purchase_link').value.trim()
+      const status = document.getElementById('status').value.trim().toLowerCase() || 'draft'
 
       const coverFile = document.getElementById('coverFile').files[0]
-      const galleryFiles = document.getElementById('galleryFiles').files
-      const imagesText = document.getElementById('productImages').value.trim()
+      const extraFiles = document.getElementById('extraFiles').files
 
-      let coverImage = null
-      let uploadedGalleryUrls = []
-
+      let cover_image = null
       if (coverFile) {
-        coverImage = await uploadImage(coverFile)
+        cover_image = await uploadImage(coverFile, 'product-cover')
       }
 
-      if (galleryFiles && galleryFiles.length > 0) {
-        uploadedGalleryUrls = await uploadMultipleImages(galleryFiles)
-      }
-
-      let parsedImages = []
-      if (imagesText) {
-        try {
-          const parsed = JSON.parse(imagesText)
-          if (Array.isArray(parsed)) {
-            parsedImages = parsed
-          }
-        } catch {
-          throw new Error('Images field must be valid JSON array.')
-        }
-      }
-
-      const images = [...uploadedGalleryUrls, ...parsedImages]
+      const extraImageUrls = await uploadMultipleImages(extraFiles, 'product-gallery')
 
       const payload = {
         name,
-        price: price === '' ? null : Number(price),
+        price: price ? Number(price) : null,
         description,
         size,
-        stock: stock === '' ? null : Number(stock),
+        stock: stock ? Number(stock) : 0,
         category,
-        cover_image: coverImage || null,
-        images,
-        youtube_url: youtubeUrl || null,
-        purchase_method: purchaseMethod || null,
-        purchase_link: purchaseLink || null,
+        youtube_url,
+        purchase_method,
+        purchase_link,
         status,
-        slug: slug || null,
-        theme: category.split(',')[0] || 'all',
         updated_at: new Date().toISOString()
       }
 
-      if (!payload.cover_image && images.length > 0) {
-        payload.cover_image = images[0]
+      if (cover_image) {
+        payload.cover_image = cover_image
+      }
+
+      if (extraImageUrls.length > 0) {
+        payload.images = extraImageUrls
       }
 
       if (productId) {
-        const { data: oldProduct, error: oldError } = await supabase
-          .from('products')
-          .select('*')
-          .eq('id', productId)
-          .single()
-
-        if (oldError) throw oldError
-
-        if (!payload.cover_image) {
-          payload.cover_image = oldProduct.cover_image || null
-        }
-
-        if ((!payload.images || payload.images.length === 0) && oldProduct.images) {
-          payload.images = oldProduct.images
-        }
-
         const { error } = await supabase
           .from('products')
           .update(payload)
           .eq('id', productId)
 
         if (error) throw error
-
-        message.textContent = 'Product updated.'
+        adminMessage.textContent = 'Product updated.'
       } else {
+        if (!payload.cover_image) {
+          payload.cover_image = 'https://via.placeholder.com/700x700'
+        }
+
+        if (!payload.images) {
+          payload.images = [payload.cover_image]
+        }
+
         const { error } = await supabase
           .from('products')
           .insert(payload)
 
         if (error) throw error
-
-        message.textContent = 'Product created.'
+        adminMessage.textContent = 'Product created.'
       }
 
       resetForm()
       await loadProducts()
+
     } catch (error) {
       console.error(error)
-      message.textContent = error.message || 'Save failed.'
+      adminMessage.textContent = error.message || 'Save failed.'
     }
   })
 
-  resetFormButton.addEventListener
+  resetFormButton.addEventListener('click', () => {
+    resetForm()
+    adminMessage.textContent = ''
+  })
+
+  logoutAdminButton.addEventListener('click', async () => {
+    await signOutUser()
+    window.location.href = 'admin-login.html'
+  })
+
+  await requireAdmin()
+  await loadProducts()
+</script>
+
+</body>
+</html>
