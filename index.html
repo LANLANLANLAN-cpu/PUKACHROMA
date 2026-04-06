@@ -13,9 +13,7 @@
     <div class="nav-side nav-left">
       <div class="menu-wrapper">
         <button class="menu-icon" id="menuToggle" aria-label="Open menu">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </button>
 
         <div class="menu-panel" id="menuPanel">
@@ -65,26 +63,32 @@
         <a href="my-account.html">My Account</a>
         <a href="contact.html">Contact Us</a>
       </nav>
+
+      <div class="top-icon-links">
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <span id="cartCount" class="cart-count"></span>
+        </a>
+      </div>
     </div>
   </header>
 
   <section class="hero-home">
     <div class="hero-box">
-      <p>Group photo as back ground</p>
-      <h1>Puka☆Chroma</h1>
+      <p id="homeHeroBody">Loading...</p>
+      <h1 id="homeHeroTitle">Loading...</h1>
     </div>
   </section>
 
   <section class="info">
-    <a class="secret" href="about.html">Find your Deep sea Secret</a>
+    <a class="secret" href="about.html" id="homeSecretText">Loading...</a>
 
-    <h2 class="event-title">Event List</h2>
+    <h2 class="event-title" id="homeEventTitle">Loading...</h2>
 
     <div class="event-large">
-      <p>TBD</p>
+      <p id="homeEventText">Loading...</p>
     </div>
 
-    <a href="about-past-performance.html" class="past-title">Past Performance</a>
+    <a href="about-past-performance.html" class="past-title" id="homePastTitle">Loading...</a>
 
     <div class="video-box">
       Video insert
@@ -94,5 +98,32 @@
 </div>
 
 <script src="script.js"></script>
+
+<script type="module">
+  import { supabase } from './supabase.js'
+  import { renderCartCount } from './cart.js'
+
+  async function loadHomeContent() {
+    const { data, error } = await supabase
+      .from('site_content')
+      .select('*')
+      .eq('page_key', 'home_hero')
+      .maybeSingle()
+
+    if (error || !data) return
+
+    const extra = data.extra || {}
+
+    document.getElementById('homeHeroTitle').textContent = data.title || 'Puka☆Chroma'
+    document.getElementById('homeHeroBody').textContent = data.body || ''
+    document.getElementById('homeSecretText').textContent = extra.secret_text || 'Find your Deep sea Secret'
+    document.getElementById('homeEventTitle').textContent = extra.event_title || 'Event List'
+    document.getElementById('homeEventText').textContent = extra.event_text || 'TBD'
+    document.getElementById('homePastTitle').textContent = extra.past_title || 'Past Performance'
+  }
+
+  loadHomeContent()
+  renderCartCount()
+</script>
 </body>
 </html>
