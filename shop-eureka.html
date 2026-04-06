@@ -6,105 +6,117 @@
   <title>Shop / All / Eureka</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-<div class="page shop-page shop-eureka-theme">
+<div class="page shop-page shop-eureka-theme" id="shopPage">
 
-<header class="navbar">
+  <header class="navbar">
+    <div class="nav-side nav-left">
+      <div class="menu-wrapper">
+        <button class="menu-icon" id="menuToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
 
-  <div class="nav-side nav-left">
-    <div class="menu-wrapper">
-      <button class="menu-icon" id="menuToggle">
-        <span></span><span></span><span></span>
-      </button>
+        <div class="menu-panel" id="menuPanel">
+          <button class="menu-main" type="button" data-target="aboutSubPanel">About Us +</button>
+          <a class="menu-main" href="schedule.html">Schedule</a>
+          <button class="menu-main" type="button" data-target="shopSubPanel">Shop +</button>
+          <button class="menu-main" type="button" data-target="loginSubPanel">Log In +</button>
+          <a class="menu-main" href="my-account.html">My Account</a>
+          <a class="menu-main" href="contact.html">Contact Us</a>
+        </div>
 
-      <div class="menu-panel" id="menuPanel">
-        <button class="menu-main" type="button" data-target="aboutSubPanel">About Us +</button>
-        <a class="menu-main" href="schedule.html">Schedule</a>
-        <button class="menu-main" type="button" data-target="shopSubPanel">Shop +</button>
-        <button class="menu-main" type="button" data-target="loginSubPanel">Log In +</button>
-        <a class="menu-main" href="my-account.html">My Account</a>
-        <a class="menu-main" href="contact.html">Contact Us</a>
+        <div class="menu-subpanel" id="aboutSubPanel">
+          <a href="about-puka-chroma.html">Puka Chroma</a>
+          <a href="about-members.html">Members</a>
+          <a href="about-staffs.html">Staffs</a>
+          <a href="about-past-performance.html">Past Performance</a>
+        </div>
+
+        <div class="menu-subpanel" id="shopSubPanel">
+          <a href="shop-all.html">All</a>
+          <a href="shop-eureka.html">Eureka</a>
+          <a href="shop-kuriru.html">Kuriru</a>
+          <a href="shop-lanlan.html">Lanlan</a>
+          <a href="shop-renie.html">Renie</a>
+          <a href="shop-azure.html">Azure</a>
+          <a href="shop-group.html">Group</a>
+        </div>
+
+        <div class="menu-subpanel" id="loginSubPanel">
+          <a href="login-register.html">Register Now</a>
+          <a href="login-account.html">I Have Account</a>
+        </div>
       </div>
 
-      <div class="menu-subpanel" id="aboutSubPanel">
-        <a href="about-puka-chroma.html">Puka Chroma</a>
-        <a href="about-members.html">Members</a>
-        <a href="about-staffs.html">Staffs</a>
-        <a href="about-past-performance.html">Past Performance</a>
-      </div>
+      <nav class="nav-links">
+        <a href="about.html">About Us</a>
+        <a href="schedule.html">Schedule</a>
+      </nav>
+    </div>
 
-      <div class="menu-subpanel" id="shopSubPanel">
-        <a href="shop-all.html">All</a>
-        <a href="shop-eureka.html">Eureka</a>
-        <a href="shop-kuriru.html">Kuriru</a>
-        <a href="shop-lanlan.html">Lanlan</a>
-        <a href="shop-renie.html">Renie</a>
-        <a href="shop-azure.html">Azure</a>
-        <a href="shop-group.html">Group</a>
-      </div>
+    <a href="index.html" class="logo">Logo</a>
 
-      <div class="menu-subpanel" id="loginSubPanel">
-        <a href="login-register.html">Register Now</a>
-        <a href="login-account.html">I Have Account</a>
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
+        <a href="shop.html">Shop</a>
+        <a href="login.html">Log In</a>
+        <a href="my-account.html">My Account</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+
+      <div class="top-icon-links">
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <span id="cartCount" class="cart-count"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="shop-content">
+    <div class="filter-row">
+      <button class="filter-button" id="filterToggle">Filter</button>
+
+      <div class="filter-menu" id="filterMenu">
+        <a href="shop-eureka.html" class="filter-eureka">Eureka</a>
+        <a href="shop-kuriru.html" class="filter-kuriru">Kuriru</a>
+        <a href="shop-renie.html" class="filter-renie">Renie</a>
+        <a href="shop-lanlan.html" class="filter-lanlan">Lanlan</a>
+        <a href="shop-azure.html" class="filter-azure">Azure</a>
+        <a href="shop-group.html" class="filter-group">Group</a>
       </div>
     </div>
 
-    <nav class="nav-links">
-      <a href="about.html">About Us</a>
-      <a href="schedule.html">Schedule</a>
-    </nav>
-  </div>
+    <h1 class="shop-title">
+      <span class="breadcrumb">Shop / All / Eureka</span>
+    </h1>
 
-  <a href="index.html" class="logo">Logo</a>
-
-  <div class="nav-side nav-right">
-    <nav class="nav-links">
-      <a href="shop.html">Shop</a>
-      <a href="login.html">Log In</a>
-      <a href="my-account.html">My Account</a>
-      <a href="contact.html">Contact Us</a>
-    </nav>
-
-    <div class="top-icon-links">
-      <a href="cart.html" class="cart-link" aria-label="Cart">
-        <span id="cartCount" class="cart-count"></span>
-      </a>
-    </div>
-  </div>
-
-</header>
-
-<section class="shop-content">
-  <div class="filter-row">
-    <button class="filter-button" id="filterToggle">Filter</button>
-    <div class="filter-menu" id="filterMenu">
-      <a href="shop-eureka.html" class="filter-eureka">Eureka</a>
-      <a href="shop-kuriru.html" class="filter-kuriru">Kuriru</a>
-      <a href="shop-renie.html" class="filter-renie">Renie</a>
-      <a href="shop-lanlan.html" class="filter-lanlan">Lanlan</a>
-      <a href="shop-azure.html" class="filter-azure">Azure</a>
-      <a href="shop-group.html" class="filter-group">Group</a>
-    </div>
-  </div>
-
-  <h1 class="shop-title"><span class="breadcrumb">Shop / All / Eureka</span></h1>
-  <div class="product-grid" id="productGrid"></div>
-</section>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
 
 </div>
 
 <script src="script.js"></script>
 
 <script type="module">
-  import { fetchProductsByCategory, formatPrice, getSafeCoverImage } from './shop-data.js'
+  import { fetchProductsByCategory, formatPrice, getSafeCoverImage, getThemeByCategory } from './shop-data.js'
   import { renderCartCount } from './cart.js'
 
-  async function loadProducts() {
-    const grid = document.getElementById('productGrid')
+  const grid = document.getElementById('productGrid')
+  const page = document.getElementById('shopPage')
 
+  async function loadProducts() {
     try {
       const products = await fetchProductsByCategory('eureka')
+
+      page.classList.remove(
+        'shop-all-theme',
+        'shop-kuriru-theme',
+        'shop-renie-theme',
+        'shop-lanlan-theme',
+        'shop-azure-theme',
+        'shop-group-theme'
+      )
+      page.classList.add(getThemeByCategory('eureka'))
 
       if (!products.length) {
         grid.innerHTML = '<p>No Eureka products yet.</p>'
@@ -112,7 +124,7 @@
       }
 
       grid.innerHTML = products.map(product => `
-        <a class="product-card product-real-card" href="product.html?id=${product.id}">
+        <a href="product.html?id=${product.id}" class="product-card product-real-card">
           <img src="${getSafeCoverImage(product)}" alt="${product.name || ''}" class="product-thumb">
           <div class="product-info">
             <h3>${product.name || ''}</h3>
@@ -124,7 +136,7 @@
       await renderCartCount()
     } catch (error) {
       console.error(error)
-      grid.innerHTML = `<p>Failed to load Eureka products.</p><p>${error.message || ''}</p>`
+      grid.innerHTML = `<p>Failed to load products.</p><p>${error.message || ''}</p>`
     }
   }
 
