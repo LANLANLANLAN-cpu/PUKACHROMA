@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<div class="page shop-page shop-all-theme">
+
+  <header class="navbar">
+
+    <div class="nav-side nav-left">
+      <div class="menu-wrapper">
+        <button class="menu-icon" id="menuToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+
+        <div class="menu-panel" id="menuPanel">
+          <button class="menu-main" type="button" data-target="aboutSubPanel">About Us +</button>
+          <a class="menu-main" href="schedule.html">Schedule</a>
+          <button class="menu-main" type="button" data-target="shopSubPanel">Shop +</button>
+          <button class="menu-main" type="button" data-target="loginSubPanel">Log In +</button>
+          <a class="menu-main" href="my-account.html">My Account</a>
+          <a class="menu-main" href="contact.html">Contact Us</a>
+        </div>
+
+        <div class="menu-subpanel" id="aboutSubPanel">
+          <a href="about-puka-chroma.html">Puka Chroma</a>
+          <a href="about-members.html">Members</a>
+          <a href="about-staffs.html">Staffs</a>
+          <a href="about-past-performance.html">Past Performance</a>
+        </div>
+
+        <div class="menu-subpanel" id="shopSubPanel">
+          <a href="shop-all.html">All</a>
+          <a href="shop-eureka.html">Eureka</a>
+          <a href="shop-kuriru.html">Kuriru</a>
+          <a href="shop-lanlan.html">Lanlan</a>
+          <a href="shop-renie.html">Renie</a>
+          <a href="shop-azure.html">Azure</a>
+          <a href="shop-group.html">Group</a>
+        </div>
+
+        <div class="menu-subpanel" id="loginSubPanel">
+          <a href="login-register.html">Register Now</a>
+          <a href="login-account.html">I Have Account</a>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="about.html">About Us</a>
+        <a href="schedule.html">Schedule</a>
+      </nav>
+    </div>
+
+    <a href="index.html" class="logo">Logo</a>
+
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
+        <a href="shop.html">Shop</a>
+        <a href="login.html">Log In</a>
+        <a href="my-account.html">My Account</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+
+      <div class="top-icon-links">
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <span id="cartCount" class="cart-count"></span>
+        </a>
+      </div>
+    </div>
+
+  </header>
+
+  <section class="cart-page-wrap">
+    <h1 class="cart-page-title">Cart</h1>
+
+    <div id="cartList" class="cart-list"></div>
+
+    <div id="cartTotalBox" class="cart-total-box" style="display:none;"></div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+
+<script type="module">
+  import { getCurrentUser } from './auth.js'
+  import { getMyCartItems, removeCartItem, updateCartItemQuantity, renderCartCount } from './cart.js'
+  import { formatPrice } from './shop-data.js'
+
+  const cartList = document.getElementById('cartList')
+  const cartTotalBox = document.getElementById('cartTotalBox')
+
+  function escapeHtml(text = '') {
+    return String(text)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;')
+  }
+
+  function calcTotal(items) {
+    return items.reduce((sum, item) => {
+      const price = Number(item.products?.price || 0)
+      const qty = Number(item.quantity || 0)
+      return sum + price * qty
+    }, 0)
+  }
+
+  async function loadCart() {
+    const user = await getCurrentUser()
+
+    if (!user) {
+      cartList.innerHTML = '<p>Please log in to view your cart.</p>'
+      cartTotalBox.style.display = 'none'
+      return
+    }
+
+    try {
+      const items = await getMyCartItems()
+
+      if (!items || items.length === 0) {
+        cartList.innerHTML = '<p>Your cart is empty.</p>'
+        cartTotalBox.style.display = 'none'
+        await renderCartCount()
+        return
+      }
+
+      cartList.innerHTML = items.map(item => {
+        const product = item.products || {}
+        const image = product.cover_image || 'https://via.placeholder.com/400x400'
+        const lineTotal = Number(product.price || 0) * Number(item.quantity || 0)
+
+        return `
+          <div class="cart-item-card" data-cart-item-id="${item.id}">
+            <img src="${image}" alt="${escapeHtml(product.name || '')}" class="cart-item-image">
+
+            <div class="cart-item-main">
+              <h3>${escapeHtml(product.name || '')}</h3>
+              <p>${formatPrice(product.price)}</p>
+              <p>Category: ${escapeHtml(product.category || '')}</p>
+              <p>Purchase: ${escapeHtml(product.purchase_method || '')}</p>
+              <p>Line Total: ${formatPrice(lineTotal)}</p>
+            </div>
+
+            <div class="cart-item-actions">
+              <div class="quantity-row">
+                <button class="small-action-button decrease-btn" data-id="${item.id}" data-qty="${item.quantity}">-</button>
+                <span>${item.quantity}</span>
+                <button class="small-action-button increase-btn" data-id="${item.id}" data-qty="${item.quantity}">+</button>
+              </div>
+
+              <button class="small-action-button remove-btn" data-id="${item.id}">
+                Remove
+              </button>
+
+              <a class="small-action-button" href="product.html?id=${product.id}">
+                View Product
+              </a>
+            </div>
+          </div>
+        `
+      }).join('')
+
+      const total = calcTotal(items)
+      cartTotalBox.style.display = 'block'
+      cartTotalBox.textContent = `Total: ${formatPrice(total)}`
+
+      bindCartButtons()
+      await renderCartCount()
+
+    } catch (error) {
+      console.error(error)
+      cartList.innerHTML = `<p>Failed to load cart.</p><p>${error.message || ''}</p>`
+      cartTotalBox.style.display = 'none'
+    }
+  }
+
+  function bindCartButtons() {
+    document.querySelectorAll('.remove-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const id = button.getAttribute('data-id')
+        await removeCartItem(id)
+        await loadCart()
+      })
+    })
+
+    document.querySelectorAll('.increase-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const id = button.getAttribute('data-id')
+        const qty = Number(button.getAttribute('data-qty') || 0)
+        await updateCartItemQuantity(id, qty + 1)
+        await loadCart()
+      })
+    })
+
+    document.querySelectorAll('.decrease-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const id = button.getAttribute('data-id')
+        const qty = Number(button.getAttribute('data-qty') || 0)
+        await updateCartItemQuantity(id, qty - 1)
+        await loadCart()
+      })
+    })
+  }
+
+  loadCart()
+</script>
+
+</body>
+</html>
