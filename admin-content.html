@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Content</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="page">
+
+  <header class="navbar">
+    <div class="nav-side nav-left">
+      <nav class="nav-links">
+        <a href="admin-products.html">Admin Products</a>
+      </nav>
+    </div>
+
+    <a href="index.html" class="logo">Logo</a>
+
+    <div class="nav-side nav-right">
+      <nav class="nav-links">
+        <a href="my-account.html">My Account</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="content-page">
+    <div class="content-wrap">
+      <h1>Admin Content</h1>
+
+      <div class="card dark" style="margin-bottom: 32px;">
+        <form class="login-form" id="contentForm">
+          <label for="pageKey">Page Key</label>
+          <select id="pageKey" required>
+            <option value="home_hero">home_hero</option>
+            <option value="about_main">about_main</option>
+            <option value="about_puka_chroma">about_puka_chroma</option>
+            <option value="about_members">about_members</option>
+            <option value="about_staffs">about_staffs</option>
+            <option value="about_past_performance">about_past_performance</option>
+          </select>
+
+          <input type="text" id="contentTitle" placeholder="Title" />
+          <textarea id="contentBody" placeholder="Body" style="padding:14px 16px; min-height:180px;"></textarea>
+          <textarea id="contentExtra" placeholder='Extra JSON, example: {"event_title":"Event List"}' style="padding:14px 16px; min-height:160px;"></textarea>
+
+          <button type="submit">Save Content</button>
+        </form>
+
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+          <button id="loadContentButton" style="padding:12px 18px; border:none; cursor:pointer;">Load Selected</button>
+          <button id="logoutContentAdminButton" style="padding:12px 18px; border:none; cursor:pointer;">Log Out</button>
+        </div>
+
+        <p id="contentAdminMessage" style="margin-top:16px;"></p>
+      </div>
+
+      <div class="card light">
+        <h2 style="margin-bottom: 20px;">Current Saved Content</h2>
+        <div id="contentList"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script type="module">
+  import { supabase } from './supabase.js'
+  import { getCurrentUser, getMyProfile, signOutUser } from './auth.js'
+
+  const form = document.getElementById('contentForm')
+  const pageKey = document.getElementById('pageKey')
+  const titleInput = document.getElementById('contentTitle')
+  const bodyInput = document.getElementById('contentBody')
+  const extraInput = document.getElementById('contentExtra')
+  const msg = document.getElementById('contentAdminMessage')
+  const list = document.getElementById('contentList')
+  const loadButton = document.getElementById('loadContentButton')
+  const logoutButton = document.getElementById('logoutContentAdminButton')
+
+  async function requireAdmin() {
+    const user = await getCurrentUser()
+    if (!user) {
+      window.location.href = 'admin-login.html'
+      return null
+    }
+
+    const profile = await getMyProfile()
+    if (!profile || !['admin', 'owner'].includes(profile.role)) {
+      alert('You do not have admin access.')
+      window.location.href = 'index.html'
+      return null
+    }
+
+    return { user, profile }
+  }
+
+  function escapeHtml(text = '') {
+    return String(text)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;')
+  }
+
+  async function loadSelectedContent() {
+    msg.textContent = ''
+
+    const { data, error } = await supabase
+      .from('site_content')
+      .select('*')
+      .eq('page_key', pageKey.value)
+      .maybeSingle()
+
+    if (error) {
+      msg.textContent = error.message
+      return
+    }
+
+    if (!data) {
+      titleInput.value = ''
+      bodyInput.value = ''
+      extraInput.value = '{}'
+      msg.textContent = 'No content yet for this key.'
+      return
+    }
+
+    titleInput.value = data.title || ''
+    bodyInput.value = data.body || ''
+    extraInput.value = JSON.stringify(data.extra || {}, null, 2)
+    msg.textContent = 'Loaded.'
+  }
+
+  async function loadAllContent() {
+    const { data, error } = await supabase
+      .from('site_content')
+      .select('*')
+      .order('page_key')
+
+    if (error) {
+      list.innerHTML = `<p>${error.message}</p>`
+      return
+    }
+
+    if (!data || data.length === 0) {
+      list.innerHTML = '<p>No content yet.</p>'
+      return
+    }
+
+    list.innerHTML = data.map(item => `
+      <div style="padding:16px; border:1px solid #ccc; margin-bottom:16px;">
+        <h3 style="margin-bottom:8px;">${escapeHtml(item.page_key)}</h3>
+        <p style="margin-bottom:8px;"><strong>Title:</strong> ${escapeHtml(item.title || '')}</p>
+        <p style="margin-bottom:8px;"><strong>Body:</strong> ${escapeHtml(item.body || '')}</p>
+        <pre style="white-space:pre-wrap;">${escapeHtml(JSON.stringify(item.extra || {}, null, 2))}</pre>
+      </div>
+    `).join('')
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    msg.textContent = ''
+
+    try {
+      let extraParsed = {}
+      if (extraInput.value.trim()) {
+        extraParsed = JSON.parse(extraInput.value)
+      }
+
+      const payload = {
+        page_key: pageKey.value,
+        title: titleInput.value.trim(),
+        body: bodyInput.value.trim(),
+        extra: extraParsed,
+        updated_at: new Date().toISOString()
+      }
+
+      const { error } = await supabase
+        .from('site_content')
+        .upsert(payload, { onConflict: 'page_key' })
+
+      if (error) throw error
+
+      msg.textContent = 'Content saved.'
+      await loadAllContent()
+    } catch (error) {
+      console.error(error)
+      msg.textContent = error.message || 'Save failed.'
+    }
+  })
+
+  loadButton.addEventListener('click', loadSelectedContent)
+
+  logoutButton.addEventListener('click', async () => {
+    await signOutUser()
+    window.location.href = 'admin-login.html'
+  })
+
+  await requireAdmin()
+  await loadSelectedContent()
+  await loadAllContent()
+</script>
+
+</body>
+</html>
