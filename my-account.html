@@ -65,6 +65,12 @@
         <a href="my-account.html">My Account</a>
         <a href="contact.html">Contact Us</a>
       </nav>
+
+      <div class="top-icon-links">
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <span id="cartCount" class="cart-count"></span>
+        </a>
+      </div>
     </div>
   </header>
 
@@ -74,6 +80,10 @@
 
       <div class="card light" id="accountCard">
         Loading account...
+      </div>
+
+      <div class="category-grid" style="margin-top: 28px;">
+        <a href="cart.html" class="category-card">Cart</a>
       </div>
 
       <div style="margin-top: 24px;">
@@ -90,6 +100,7 @@
 
 <script type="module">
   import { getCurrentUser, getMyProfile, ensureProfile, signOutUser } from './auth.js'
+  import { renderCartCount } from './cart.js'
 
   const accountCard = document.getElementById('accountCard')
   const logoutButton = document.getElementById('logoutButton')
@@ -143,6 +154,7 @@
   })
 
   loadAccount()
+  renderCartCount()
 </script>
 
 </body>
