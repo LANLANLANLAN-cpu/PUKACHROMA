@@ -13,9 +13,7 @@
     <div class="nav-side nav-left">
       <div class="menu-wrapper">
         <button class="menu-icon" id="menuToggle">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </button>
 
         <div class="menu-panel" id="menuPanel">
@@ -65,19 +63,55 @@
         <a href="my-account.html">My Account</a>
         <a href="contact.html">Contact Us</a>
       </nav>
+
+      <div class="top-icon-links">
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <span id="cartCount" class="cart-count"></span>
+        </a>
+      </div>
     </div>
   </header>
 
   <section class="content-page">
     <div class="content-wrap">
-      <h1>Past Performance</h1>
-      <div class="video-box past-video">Video insert</div>
-      <div class="video-box past-video">Video insert</div>
+      <h1 id="pastTitle">Past Performance</h1>
+
+      <div class="card light" id="pastBody" style="margin-bottom: 28px;">
+        Loading...
+      </div>
+
+      <div class="video-box past-video" id="pastVideo1">Loading...</div>
+      <div class="video-box past-video" id="pastVideo2">Loading...</div>
     </div>
   </section>
 
 </div>
 
 <script src="script.js"></script>
+
+<script type="module">
+  import { supabase } from './supabase.js'
+  import { renderCartCount } from './cart.js'
+
+  async function loadPastContent() {
+    const { data, error } = await supabase
+      .from('site_content')
+      .select('*')
+      .eq('page_key', 'about_past_performance')
+      .maybeSingle()
+
+    if (error || !data) return
+
+    const extra = data.extra || {}
+
+    document.getElementById('pastTitle').textContent = data.title || 'Past Performance'
+    document.getElementById('pastBody').textContent = data.body || ''
+    document.getElementById('pastVideo1').textContent = extra.video_1 || 'Video insert'
+    document.getElementById('pastVideo2').textContent = extra.video_2 || 'Video insert'
+  }
+
+  loadPastContent()
+  renderCartCount()
+</script>
 </body>
 </html>
